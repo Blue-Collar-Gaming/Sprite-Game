@@ -30,6 +30,14 @@ public class EnemyWeapon : MonoBehaviour
                 // Run the knockback code
             }
             
+        } else if (other.gameObject.tag == "Enemy")
+        {
+            Debug.Log("Inenemy");
+            if (gameObject.tag == "Player Weapon")
+            {
+                other.gameObject.GetComponent<EnemyCombat>().TakeDamage(2);
+                if(GetComponent<Projectile>() != null) Destroy(gameObject);
+            }
         }
     }
 }

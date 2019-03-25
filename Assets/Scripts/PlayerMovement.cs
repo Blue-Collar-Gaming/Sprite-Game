@@ -43,6 +43,16 @@ public class PlayerMovement : MonoBehaviour {
         controller = GetComponent<CharacterController>();
 	}
 
+    /// <summary>
+    ///     This is used by other player mechanic functions to procedurally determine the direction the player is facing and modify the behavior accordingly
+    ///      - SwordAnimator.cs calls this for the direction-ambiguous SwordSwing() function calls
+    /// </summary>
+    /// <returns></returns>
+    public Facing GetDirection()
+    {
+        return direction;
+    }
+
     public void PlayerMovementUpdate(int playerNumber)
     {
         //RunCounterClockWiseCameraOrbit();

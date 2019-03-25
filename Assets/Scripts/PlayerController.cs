@@ -5,6 +5,7 @@ using UnityEngine;
 public enum PlayerState
 {
     Normal,
+    Swinging,
     Teleporting,
     Dead
 }
@@ -29,9 +30,12 @@ public class PlayerController : MonoBehaviour
     PlayerTeleport playerTeleport;
     // This component is used to handle the Death mechanics
     PlayerDeath playerDeath;
-
+    // PlayerCombat is used for controlling weapon attacks and handling damage calculations
+    PlayerCombat playerCombat;
     // This player state is used to determine how the player can be controlled by the player at any given time
     PlayerState playerState = PlayerState.Normal;
+    // This is used for all things concerned with sword mechanics
+    SwordSwing swordSwing;
 
     // Start is called before the first frame update - Collect the components
     void Start()
@@ -40,6 +44,8 @@ public class PlayerController : MonoBehaviour
         playerWaypointSystem = GetComponentInChildren<PlayerWaypointSystem>();
         playerTeleport = GetComponent<PlayerTeleport>();
         playerDeath = GetComponent<PlayerDeath>();
+        playerCombat = GetComponent<PlayerCombat>();
+        swordSwing = GetComponentInChildren<SwordSwing>();
     }
 
     // Update is called once per frame
@@ -58,6 +64,10 @@ public class PlayerController : MonoBehaviour
             case PlayerState.Dead:
                 playerDeath.PlayerDeathUpdate();
             break;
+
+            case PlayerState.Swinging:
+                swordSwing.RunSwordSwingUpdate();
+            break;
         }
         
     }
@@ -73,6 +83,10 @@ public class PlayerController : MonoBehaviour
             case PlayerState.Teleporting:
                
             break;
+
+            case PlayerState.Swinging:
+                SwingingStateFixedUpdate();
+            break;
         }
     }
 
@@ -87,12 +101,24 @@ public class PlayerController : MonoBehaviour
         {
             // This reads Button 0 for jumping
             playerMovement.PlayerMovementUpdate(playerID);
+            // This reads button 1 for sword attacking
+            playerCombat.RunPlayerCombatUpdate(playerID);
         }
     }
     void NormalStateFixedUpdate()
     {
         // This reads the X and y axes on the joystick
         playerMovement.PlayerMovementFixedUpdate(playerID);
+    }
+
+    void SwingingStateUpdate()
+    {
+
+    }
+    void SwingingStateFixedUpdate()
+    {
+        // Move like this was the normal state
+        NormalStateFixedUpdate();
     }
 
     // These are used as initialization functions when the PlayerManager instantiates player prefabs
@@ -105,10 +131,19 @@ public class PlayerController : MonoBehaviour
         playerID = 2;
     }
 
+    /// <summary>
+    /// This function sets the player state back to normal
+    /// </summary>
     public void SetPlayerStateToNormal()
     {
         playerState = PlayerState.Normal;
     }
+    
+    public void SetPlayerStateToSwinging()
+    {
+        playerState = PlayerState.Swinging;
+    }
+
     // This is a pass-through command that flags the central PlayerController to run the teleport sequence
     //   and initializes the PlayerTeleport mechanics with the received Waypoint information
     public void WaypointTeleport(Waypoint targetWaypoint, float heightOffset)

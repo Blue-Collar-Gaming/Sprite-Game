@@ -7,7 +7,7 @@ public class Projectile : MonoBehaviour
     float lifespan = 5.0f;
     Vector3 movementVector = Vector3.zero;
     float speed = 3.0f;
-
+    
     public void InitializeProjectile(float newLifespan, Vector3 newMovementVector, float newSpeed)
     {
         lifespan = newLifespan;
@@ -43,7 +43,15 @@ public class Projectile : MonoBehaviour
         if (collision.gameObject.tag == "Environment")
             Destroy(gameObject);
         if (collision.gameObject.tag == "Player Weapon")
-            Destroy(gameObject);
+        {
+            // Destroy(gameObject);
+            Vector3 hitbackVector = transform.position - collision.ClosestPoint(transform.position);
+            hitbackVector.Normalize();
+
+            movementVector = hitbackVector;
+            gameObject.tag = "Player Weapon";
+            
+        }
         if (collision.gameObject.tag == "Player")
             Destroy(gameObject);
     }

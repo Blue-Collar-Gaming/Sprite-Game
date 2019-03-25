@@ -14,8 +14,13 @@ public class SpectreAI : MonoBehaviour
     // The variables related to animating the spectre's head
     public Animator spectreHeadAnimator;
     Vector3 oldPosition = Vector3.zero;
+    // This keeps a reference to the death animator
+    public Animator spectreDeathAnimator;
+
     // The starting position to return to if it has nothing to attack
     Vector3 startPosition;
+
+    EnemyCombat enemyCombat;
 
     [Space(10)]
     // The variables related to the scythe attack
@@ -43,6 +48,9 @@ public class SpectreAI : MonoBehaviour
         aggroTarget = null;
         // Initialize the starting position
         startPosition = transform.position;
+
+        // This is used to deal with enemy stats and health
+        enemyCombat = GetComponent<EnemyCombat>();
     }
 
     // Update is called once per frame
@@ -88,8 +96,12 @@ public class SpectreAI : MonoBehaviour
             agent.destination = transform.position;
             Vector3 directionVector = aggroTarget.transform.position - transform.position;
             directionVector.Normalize();
+            // This faces the head in the right direction
             spectreHeadAnimator.SetFloat("Horizontal Speed", directionVector.x);
             spectreHeadAnimator.SetFloat("Vertical Speed", directionVector.z);
+            // This updates the animator that controls the death animations so it faces the right way
+            spectreHeadAnimator.SetFloat("Horizontal Direction", directionVector.x);
+            spectreHeadAnimator.SetFloat("Vertical Direction", directionVector.z);
 
             scytheAttackTimer += Time.deltaTime;
             if(scytheAttackTimer > scytheAttackCooldown){
@@ -118,6 +130,9 @@ public class SpectreAI : MonoBehaviour
             directionVector.Normalize();
             spectreHeadAnimator.SetFloat("Horizontal Speed", directionVector.x);
             spectreHeadAnimator.SetFloat("Vertical Speed", directionVector.z);
+            // This updates the animator that controls the death animations so it faces the right way
+            spectreHeadAnimator.SetFloat("Horizontal Direction", directionVector.x);
+            spectreHeadAnimator.SetFloat("Vertical Direction", directionVector.z);
 
             oldPosition = transform.position;
             
@@ -145,4 +160,20 @@ public class SpectreAI : MonoBehaviour
 
         agent.destination = startPosition;
     }
+    /**
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Player Weapon")
+        {
+            if (other.gameObject.GetComponent<SwordSwing>())
+            {
+                enemyCombat.TakeDamage(other.gameObject.GetComponent<SwordSwing>().currentDamage);
+            }
+            else if (other.gameObject.GetComponent<EnemyWeapon>() != null)
+            {
+                enemyCombat.TakeDamage(other.gameObject.GetComponent<EnemyWeapon>().damage);
+            }
+        }
+    }
+    **/
 }

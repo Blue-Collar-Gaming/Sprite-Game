@@ -16,6 +16,17 @@ public class PlayerCombat : MonoBehaviour
     bool invulnerable = false;
     float invulnerabilityTimer = 0.0f;
 
+    // swordSwing is a reference to the component that controls the sword mechanics
+    public SwordSwing swordSwing;
+
+    public void RunPlayerCombatUpdate(int playerID)
+    {
+        if(Input.GetButtonDown("P" + playerID + " Button 2") || Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            swordSwing.SwordSwing1();
+        }
+    }
+
     private void Start()
     {
         playerController = GetComponent<PlayerController>();
