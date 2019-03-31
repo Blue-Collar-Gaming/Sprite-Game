@@ -111,14 +111,17 @@ public class SpectreAI : MonoBehaviour
                 }
                 else
                 {
-                    scytheAttackTimer -= scytheAttackCooldown;
+                    if (enemyCombat.IsEnemyAlive())
+                    {
+                        scytheAttackTimer -= scytheAttackCooldown;
 
-                    GameObject newScythe = (GameObject)Instantiate(scythePrefab);
-                    newScythe.transform.position = transform.position;
-                    Vector3 attackVector = aggroTarget.transform.position - transform.position;
-                    attackVector.Normalize();
-                    newScythe.GetComponent<Projectile>().InitializeProjectile(scytheLifespan, directionVector, scytheSpeed);
-                    newScythe.GetComponent<EnemyWeapon>().InitializeEnemyWeapon(scytheAttackDamage, scytheHasKnockback, scytheKnockbackValue);
+                        GameObject newScythe = (GameObject)Instantiate(scythePrefab);
+                        newScythe.transform.position = transform.position;
+                        Vector3 attackVector = aggroTarget.transform.position - transform.position;
+                        attackVector.Normalize();
+                        newScythe.GetComponent<Projectile>().InitializeProjectile(scytheLifespan, directionVector, scytheSpeed);
+                        newScythe.GetComponent<EnemyWeapon>().InitializeEnemyWeapon(scytheAttackDamage, scytheHasKnockback, scytheKnockbackValue);
+                    }
                 }
             }
         }

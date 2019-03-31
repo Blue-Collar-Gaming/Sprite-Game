@@ -7,6 +7,8 @@ public class EnemyCombat : MonoBehaviour
     public float health = 1;
     public float defense = 1;
 
+    bool isAlive = true;
+
     [Space(10)]
     public SpriteRenderer rendererToHide;
     public SpriteRenderer secondaryRendererToHide;
@@ -30,13 +32,18 @@ public class EnemyCombat : MonoBehaviour
 
     void KillEnemy()
     {
-        rendererToHide.enabled = false;
-        if (secondaryRendererToHide != null) secondaryRendererToHide.enabled = false;
-        deathRenderer.enabled = true;
-        deathAnimator.SetTrigger("Die");
+        if (isAlive)
+        {
+            rendererToHide.enabled = false;
+            if (secondaryRendererToHide != null) secondaryRendererToHide.enabled = false;
+            deathRenderer.enabled = true;
+            deathAnimator.SetTrigger("Die");
 
-        // Temporary destroy for death
-        Destroy(gameObject, 1.0f);
+            isAlive = false;
+
+            // Temporary destroy for death
+            Destroy(gameObject, 1.0f);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -47,5 +54,10 @@ public class EnemyCombat : MonoBehaviour
 
                 break;
         }
+    }
+
+    public bool IsEnemyAlive()
+    {
+        return isAlive;
     }
 }
